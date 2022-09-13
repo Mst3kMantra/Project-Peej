@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Jumping : BaseState
 {
-    private MovementSM _sm;
+    private readonly MovementSM _sm;
     private float _horizontalInput;
     private bool isFacingRight;
 
@@ -18,7 +18,7 @@ public class Jumping : BaseState
         base.Enter();
         _sm.spriteRenderer.color = Color.green;
         _sm.rigidbody.velocity = new Vector2(_sm.rigidbody.velocity.x, _sm.jumpingPower);
-        Debug.Log("Current State is " + _sm.blackboard.currentMovementState);
+        _sm.animator.Play("Base Layer.Jump");
     }
 
     public override void UpdateLogic()
@@ -40,7 +40,11 @@ public class Jumping : BaseState
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
-        _sm.rigidbody.velocity = new Vector2(_horizontalInput * _sm.speed, _sm.rigidbody.velocity.y);
+        if (_sm.GetPreviousState() == "Running")
+        {
+            _sm.rigidbody.velocity = new Vector2(_horizontalInput * _sm.runSpeed, _sm.rigidbody.velocity.y);
+        }
+        else _sm.rigidbody.velocity = new Vector2(_horizontalInput * _sm.speed, _sm.rigidbody.velocity.y);
     }
 
     public override void Exit()

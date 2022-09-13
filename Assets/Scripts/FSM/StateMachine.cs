@@ -67,9 +67,4 @@ public class StateMachine : MonoBehaviour
         return previousState.name;
     }
 
-    private void OnGUI()
-    {
-        string content = currentState != null ? currentState.name : "(no current state)";
-        GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
-    }
 }

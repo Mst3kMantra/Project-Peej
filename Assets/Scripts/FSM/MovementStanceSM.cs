@@ -22,4 +22,14 @@ public class MovementStanceSM : StateMachine
     {
         return groundedState;
     }
+
+    private void OnGUI()
+    {
+        GUILayout.BeginArea(new Rect(0, 0, 200, 60));
+        GUILayout.BeginHorizontal();
+        string content = GetCurrentState() != null ? GetCurrentState() : "(no current state)";
+        GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
+    }
 }
