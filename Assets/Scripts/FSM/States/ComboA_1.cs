@@ -4,35 +4,26 @@ using UnityEngine;
 
 public class ComboA_1 : BaseState
 {
-    readonly private WarriorAttacksSM _sm;
+    readonly private WarriorAttackSM _sm;
 
-    public ComboA_1(WarriorAttacksSM stateMachine) : base("ComboA_1", stateMachine) {
-        _sm = (WarriorAttacksSM)stateMachine;
+    public ComboA_1(WarriorAttackSM stateMachine) : base("ComboA_1", stateMachine) {
+        _sm = (WarriorAttackSM)stateMachine;
     }
 
     public override void Enter()
     {
         base.Enter();
-        _sm.blackboard.currentWarriorAttackState = _sm.GetCurrentState();
-        _sm.blackboard.isAttacking = true;
-        _sm.animator.Play("Base Layer.Attack");
+        EventManager.TriggerEvent("warriorAttackStateChange", new Dictionary<string, object> { { "warriorAttackState", _sm.GetCurrentState() } });
     }
 
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        if (!isAnimPlaying(_sm.animator, "Attack", 0))
+        if (_sm.blackboard.isAttackAnimFinished == true)
         {
+            _sm.blackboard.isAttackAnimFinished = false;
+            _sm.blackboard.isAttackAnimStarted = false;
             _sm.ChangeState(_sm.neutralState);
         }
-    }
-
-    bool isAnimPlaying(Animator anim, string stateName, int animLayer)
-    {
-        if (anim.GetCurrentAnimatorStateInfo(animLayer).IsName(stateName) &&
-                anim.GetCurrentAnimatorStateInfo(animLayer).normalizedTime < 1.0f)
-            return true;
-        else
-            return false;
     }
 }

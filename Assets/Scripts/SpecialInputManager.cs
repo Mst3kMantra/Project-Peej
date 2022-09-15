@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputManager : MonoBehaviour
+public class SpecialInputManager : MonoBehaviour
 {
     private float ButtonCooler = 0.25f;
     private int ButtonCount = 0;

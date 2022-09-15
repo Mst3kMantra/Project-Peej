@@ -21,10 +21,7 @@ public class Idle : BaseState
         Vector2 vel = _sm.rigidbody.velocity;
         vel.x *= 0.8f;
         _sm.rigidbody.velocity = vel;
-        if (!_sm.blackboard.isAttacking)
-        {
-            _sm.animator.Play("Base Layer.Idle");
-        }
+        EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
     }
 
     public override void UpdateLogic()

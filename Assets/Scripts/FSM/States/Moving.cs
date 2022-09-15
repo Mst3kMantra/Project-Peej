@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Moving : BaseState
+public class Moving : BaseState, IFlip
 {
     private readonly MovementSM _sm;
     private float _horizontalInput;
-    private bool isFacingRight = true;
+    public bool isFacingRight { get; set; }
 
 
     public Moving(MovementSM stateMachine) : base("Moving", stateMachine) {
         _sm = (MovementSM)stateMachine;
+        isFacingRight = true;
     }
 
     public override void Enter()
@@ -19,7 +20,7 @@ public class Moving : BaseState
         base.Enter();
         _horizontalInput = 0f;
         _sm.spriteRenderer.color = Color.red;
-        _sm.blackboard.currentMovementState = _sm.GetCurrentState();
+        EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
     }
 
     public override void UpdateLogic()
@@ -30,10 +31,6 @@ public class Moving : BaseState
             _sm.ChangeState(_sm.idleState);
         }
         _horizontalInput = Input.GetAxis("Horizontal");
-        if (!isAnimPlaying(_sm.animator, "Run", 0))
-        {
-            _sm.animator.Play("Base Layer.Run");
-        }
         if (Mathf.Abs(_horizontalInput) < Mathf.Epsilon)
         {
             stateMachine.ChangeState(_sm.idleState);
@@ -59,16 +56,7 @@ public class Moving : BaseState
         _sm.rigidbody.velocity = vel;
     }
 
-    bool isAnimPlaying(Animator anim, string stateName, int animLayer)
-    {
-        if (anim.GetCurrentAnimatorStateInfo(animLayer).IsName(stateName) &&
-                anim.GetCurrentAnimatorStateInfo(animLayer).normalizedTime < 1.0f)
-            return true;
-        else
-            return false;
-    }
-
-    private void Flip()
+    public void Flip()
     {
         if (isFacingRight && _horizontalInput < 0f || !isFacingRight && _horizontalInput > 0f)
         {
@@ -78,7 +66,7 @@ public class Moving : BaseState
                 _sm.spriteRenderer.flipX = true;
             }
             else _sm.spriteRenderer.flipX = false;
-            _sm.blackboard.isFacingRight = isFacingRight;
+            EventManager.TriggerEvent("facingChange", new Dictionary<string, object> { { "isFacingRight", isFacingRight } });
         }
     }
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Neutral : BaseState
 {
-    readonly private WarriorAttacksSM _sm;
+    readonly private WarriorAttackSM _sm;
 
-    public Neutral(WarriorAttacksSM stateMachine) : base("Neutral", stateMachine) {
-        _sm = (WarriorAttacksSM)stateMachine;
+    public Neutral(WarriorAttackSM stateMachine) : base("Neutral", stateMachine) {
+        _sm = (WarriorAttackSM)stateMachine;
     }
 
     public override void Enter()
     {
         base.Enter();
-        _sm.blackboard.currentWarriorAttackState = _sm.GetCurrentState();
-        _sm.blackboard.isAttacking = false;
+        EventManager.TriggerEvent("warriorAttackStateChange", new Dictionary<string, object> { { "warriorAttackState", _sm.GetCurrentState() } });
+        EventManager.TriggerEvent("playerAttacking", new Dictionary<string, object> { { "isAttacking", false } });
     }
 
     public override void UpdateLogic()
@@ -26,4 +26,9 @@ public class Neutral : BaseState
         }
     }
 
+    public override void Exit()
+    {
+        base.Exit();
+        EventManager.TriggerEvent("playerAttacking", new Dictionary<string, object> { { "isAttacking", true } });
+    }
 }

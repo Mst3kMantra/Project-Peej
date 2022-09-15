@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Jumping : BaseState
+public class Jumping : BaseState, IFlip
 {
     private readonly MovementSM _sm;
     private float _horizontalInput;
-    private bool isFacingRight;
+    public bool isFacingRight { get; set; }
 
     public Jumping(MovementSM stateMachine) : base ("Jumping", stateMachine)
     {
@@ -18,7 +18,7 @@ public class Jumping : BaseState
         base.Enter();
         _sm.spriteRenderer.color = Color.green;
         _sm.rigidbody.velocity = new Vector2(_sm.rigidbody.velocity.x, _sm.jumpingPower);
-        _sm.animator.Play("Base Layer.Jump");
+        EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
     }
 
     public override void UpdateLogic()
@@ -52,7 +52,7 @@ public class Jumping : BaseState
         base.Exit();
     }
 
-    private void Flip()
+    public void Flip()
     {
         if (isFacingRight && _horizontalInput < 0f || !isFacingRight && _horizontalInput > 0f)
         {
@@ -62,6 +62,7 @@ public class Jumping : BaseState
                 _sm.spriteRenderer.flipX = true;
             }
             else _sm.spriteRenderer.flipX = false;
+            EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
         }
     }
 }

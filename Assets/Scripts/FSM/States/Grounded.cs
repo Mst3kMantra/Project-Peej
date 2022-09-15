@@ -13,7 +13,7 @@ public class Grounded : BaseState
     public override void Enter()
     {
         base.Enter();
-        _sm.blackboard.currentMovementStanceState = _sm.GetCurrentState();
+        EventManager.TriggerEvent("movementStanceStateChange", new Dictionary<string, object> { { "movementStanceState", _sm.GetCurrentState() } });
     }
 
     public override void UpdateLogic()

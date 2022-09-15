@@ -13,7 +13,6 @@ public class MovementSM : StateMachine
     public new Rigidbody2D rigidbody;
     public SpriteRenderer spriteRenderer;
     public PlayerSMBlackboard blackboard;
-    public Animator animator;
     public float jumpingPower = 16f;
 
     public float speed = 4f;

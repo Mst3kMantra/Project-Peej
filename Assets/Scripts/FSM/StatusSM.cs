@@ -2,24 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WarriorAttacksSM : StateMachine
+public class StatusSM : StateMachine
 {
-    [HideInInspector] public Neutral neutralState;
-    [HideInInspector] public ComboA_1 comboA_1State;
+    [HideInInspector] public Alive aliveState;
+    [HideInInspector] public Dead deadState;
 
     public PlayerSMBlackboard blackboard;
-    public new Rigidbody2D rigidbody;
-    public Animator animator;
 
     private void Awake()
     {
-        neutralState = new Neutral(this);
-        comboA_1State = new ComboA_1(this);
+        aliveState = new Alive(this);
+        deadState = new Dead(this);
     }
 
     protected override BaseState GetInitialState()
     {
-        return neutralState;
+        return aliveState;
     }
 
     private void OnGUI()
