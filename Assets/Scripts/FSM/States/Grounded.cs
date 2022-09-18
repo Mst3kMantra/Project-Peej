@@ -4,33 +4,33 @@ using UnityEngine;
 
 public class Grounded : BaseState
 {
-    private MovementStanceSM _sm;
+    private readonly MovementStanceSM _sm;
 
     public Grounded(MovementStanceSM stateMachine) : base("Grounded", stateMachine) {
-        _sm = (MovementStanceSM)stateMachine;
+        _sm = stateMachine;
     }
 
     public override void Enter()
     {
         base.Enter();
-        EventManager.TriggerEvent("movementStanceStateChange", new Dictionary<string, object> { { "movementStanceState", _sm.GetCurrentState() } });
+        _sm.Blackboard.CurrentMovementStanceState = _sm.GetCurrentState();
     }
 
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        if (Mathf.Abs(_sm.rigidbody.velocity.y) > Mathf.Epsilon)
+        if (Mathf.Abs(_sm.Rigidbody.velocity.y) > Mathf.Epsilon)
         {
-            _sm.ChangeState(_sm.airborneState);
+            _sm.ChangeState(_sm.AirborneState);
         }
-        if (!isGrounded())
+        if (!IsGrounded())
         {
-            _sm.ChangeState(_sm.airborneState);
+            _sm.ChangeState(_sm.AirborneState);
         }
     }
 
-    private bool isGrounded()
+    private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(_sm.groundCheck.position, 0.2f, _sm.groundLayer);
+        return Physics2D.OverlapCircle(_sm.GroundCheck.position, 0.2f, _sm.GroundLayer);
     }
 }

@@ -6,87 +6,125 @@ public class PlayerSMBlackboard : MonoBehaviour
 {
     void OnEnable()
     {
-        EventManager.StartListening("statusStateChange", OnStatusStateChange);
-        EventManager.StartListening("movementStateChange", OnMovementStateChange);
-        EventManager.StartListening("movementStanceStateChange", OnMovementStanceStateChange);
-        EventManager.StartListening("warriorAttackStateChange", OnWarriorAttackStateChange);
-        EventManager.StartListening("facingChange", OnFacingChange);
-        EventManager.StartListening("doubleTapMove", OnDoubleTapMove);
-        EventManager.StartListening("playerAttacking", OnPlayerAttacking);
-        EventManager.StartListening("attackAnimStart", OnAttackAnimStart);
-        EventManager.StartListening("attackAnimEnd", OnAttackAnimEnd);
+        EventManager.StartListening("DoubleTapMove", OnDoubleTapMove);
+        EventManager.StartListening("AttackAnimStart", OnAttackAnimStart);
+        EventManager.StartListening("AttackAnimEnd", OnAttackAnimEnd);
     }
 
     void OnDisable()
     {
-        EventManager.StopListening("statusStateChange", OnStatusStateChange);
-        EventManager.StopListening("movementStateChange", OnMovementStateChange);
-        EventManager.StopListening("movementStanceStateChange", OnMovementStanceStateChange);
-        EventManager.StopListening("warriorAttackStateChange", OnWarriorAttackStateChange);
-        EventManager.StopListening("facingChange", OnFacingChange);
-        EventManager.StopListening("doubleTapMove", OnDoubleTapMove);
-        EventManager.StopListening("playerAttacking", OnPlayerAttacking);
-        EventManager.StopListening("attackAnimStart", OnAttackAnimStart);
-        EventManager.StopListening("attackAnimEnd", OnAttackAnimEnd);
+        EventManager.StopListening("DoubleTapMove", OnDoubleTapMove);
+        EventManager.StopListening("AttackAnimStart", OnAttackAnimStart);
+        EventManager.StopListening("AttackAnimEnd", OnAttackAnimEnd);
     }
 
-    public string characterSelected = "Warrior";
+    private string _characterSelected = "Warrior";
+    public string CharacterSelected
+    {
+        get { return _characterSelected; }
+        set { _characterSelected = value; }
+    }
 
     #region Current States
-    public string currentStatusState = "Alive";
-    public string currentMovementState;
-    public string currentMovementStanceState;
-    public string currentWarriorAttackState;
+    private string _currentStatusState;
+    public string CurrentStatusState
+    {
+        get { return _currentStatusState; }
+        set { _currentStatusState = value;
+            EventManager.TriggerEvent("StatusStateChange", new Dictionary<string, object> { { "StatusState", _currentStatusState } });
+        }
+    }
+    private string _currentMovementState;
+    public string CurrentMovementState
+    {
+        get { return _currentMovementState; }
+        set { _currentMovementState = value;
+            EventManager.TriggerEvent("MovementStateChange", new Dictionary<string, object> { { "MovementState", CurrentMovementState } });
+        }
+    }
+    private string _currentMovementStanceState;
+    public string CurrentMovementStanceState
+    {
+        get { return _currentMovementStanceState; }
+        set { _currentMovementStanceState = value;
+            EventManager.TriggerEvent("MovementStanceStateChange", new Dictionary<string, object> { { "MovementStanceState", CurrentMovementStanceState } });
+        }
+    }
+    private string _currentWarriorAttackState;
+    public string CurrentWarriorAttackState
+    {
+        get { return _currentWarriorAttackState; }
+        set { _currentWarriorAttackState = value;
+            EventManager.TriggerEvent("WarriorAttackStateChange", new Dictionary<string, object> { { "WarriorAttackState", CurrentWarriorAttackState } });
+        }
+    }
     #endregion
 
-    public bool isFacingRight;
-    public bool isMoveDoubleTapped;
-    public bool isAttacking;
-    public bool isAttackAnimStarted;
-    public bool isAttackAnimFinished;
-
-    void OnStatusStateChange(Dictionary<string, object> message)
+    private bool _isFacingRight;
+    public bool IsFacingRight
     {
-        currentStatusState = (string) message["statusState"];
+        get { return _isFacingRight; }
+        set
+        {
+            _isFacingRight = value;
+            EventManager.TriggerEvent("FacingChange", new Dictionary<string, object> { { "IsFacingRight", IsFacingRight } });
+        }
     }
-
-    void OnMovementStateChange(Dictionary<string, object> message)
+    private bool _isMoveDoubleTapped;
+    public bool IsMoveDoubleTapped
     {
-        currentMovementState = (string) message["movementState"];
+        get { return _isMoveDoubleTapped; }
+        set { _isMoveDoubleTapped = value; }
     }
-
-    void OnMovementStanceStateChange(Dictionary<string, object> message)
+    private bool _isAttacking;
+    public bool IsAttacking
     {
-        currentMovementStanceState = (string) message["movementStanceState"];
+        get { return _isAttacking; }
+        set { _isAttacking = value;
+            EventManager.TriggerEvent("PlayerAttacking", new Dictionary<string, object> { { "IsAttacking", IsAttacking } });
+        }
     }
-
-    void OnWarriorAttackStateChange(Dictionary<string, object> message)
+    private bool _isAttackAnimStarted;
+    public bool IsAttackAnimStarted
     {
-        currentWarriorAttackState = (string) message["warriorAttackState"];
+        get { return _isAttackAnimStarted; }
+        set { _isAttackAnimStarted = value; }
+    }
+    private bool _isAttackAnimFinished;
+    public bool IsAttackAnimFinished
+    {
+        get { return _isAttackAnimFinished; }
+        set { _isAttackAnimFinished = value; }
+    }
+    private int _maxHits;
+    public int MaxHits
+    {
+        get { return _maxHits; }
+        set { _maxHits = value; 
+        EventManager.TriggerEvent("PlayerMaxHits", new Dictionary<string, object> { { "MaxHits", MaxHits } });
+        }
+    }
+    private float _damage;
+    public float Damage
+    {
+        get { return _damage; }
+        set { _damage = value;
+            EventManager.TriggerEvent("PlayerDamage", new Dictionary<string, object> { { "Damage", Damage } });
+        }
     }
 
     void OnDoubleTapMove(Dictionary<string, object> message)
     {
-        isMoveDoubleTapped = true;
-    }
-
-    void OnFacingChange(Dictionary<string, object> message)
-    {
-        isFacingRight = (bool) message["isFacingRight"];
-    }
-
-    void OnPlayerAttacking(Dictionary<string, object> message)
-    {
-        isAttacking = (bool) message["isAttacking"];
+        IsMoveDoubleTapped = true;
     }
 
     void OnAttackAnimStart(Dictionary<string, object> message)
     {
-        isAttackAnimStarted = true;
+        IsAttackAnimStarted = true;
     }
 
     void OnAttackAnimEnd(Dictionary<string, object> message)
     {
-        isAttackAnimFinished = true;
+        IsAttackAnimFinished = true;
     }
 }

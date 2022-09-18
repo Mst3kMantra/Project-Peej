@@ -6,32 +6,32 @@ public class Jumping : BaseState, IFlip
 {
     private readonly MovementSM _sm;
     private float _horizontalInput;
-    public bool isFacingRight { get; set; }
+    private bool _isFacingRight;
 
     public Jumping(MovementSM stateMachine) : base ("Jumping", stateMachine)
     {
-        _sm = (MovementSM)stateMachine;
+        _sm = stateMachine;
     }
 
     public override void Enter()
     {
         base.Enter();
-        _sm.spriteRenderer.color = Color.green;
-        _sm.rigidbody.velocity = new Vector2(_sm.rigidbody.velocity.x, _sm.jumpingPower);
-        EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
+        _sm.SpriteRenderer.color = Color.green;
+        _sm.Rigidbody.velocity = new Vector2(_sm.Rigidbody.velocity.x, _sm.JumpingPower);
+        _sm.Blackboard.CurrentMovementState = _sm.GetCurrentState();
     }
 
     public override void UpdateLogic()
     {
         base.UpdateLogic();
         _horizontalInput = Input.GetAxis("Horizontal");
-        if (Input.GetButtonUp("Jump") && _sm.rigidbody.velocity.y > 0f)
+        if (Input.GetButtonUp("Jump") && _sm.Rigidbody.velocity.y > 0f)
         {
-            _sm.rigidbody.velocity = new Vector2(_sm.rigidbody.velocity.x, _sm.rigidbody.velocity.y * 0.5f);
+            _sm.Rigidbody.velocity = new Vector2(_sm.Rigidbody.velocity.x, _sm.Rigidbody.velocity.y * 0.5f);
         }
-        if (_sm.blackboard.currentMovementStanceState == "Grounded")
+        if (_sm.Blackboard.CurrentMovementStanceState == "Grounded")
         {
-            stateMachine.RevertState();
+            StateMachine.RevertState();
         }
 
         Flip();
@@ -42,9 +42,9 @@ public class Jumping : BaseState, IFlip
         base.UpdatePhysics();
         if (_sm.GetPreviousState() == "Running")
         {
-            _sm.rigidbody.velocity = new Vector2(_horizontalInput * _sm.runSpeed, _sm.rigidbody.velocity.y);
+            _sm.Rigidbody.velocity = new Vector2(_horizontalInput * _sm.RunSpeed, _sm.Rigidbody.velocity.y);
         }
-        else _sm.rigidbody.velocity = new Vector2(_horizontalInput * _sm.speed, _sm.rigidbody.velocity.y);
+        else _sm.Rigidbody.velocity = new Vector2(_horizontalInput * _sm.Speed, _sm.Rigidbody.velocity.y);
     }
 
     public override void Exit()
@@ -54,15 +54,15 @@ public class Jumping : BaseState, IFlip
 
     public void Flip()
     {
-        if (isFacingRight && _horizontalInput < 0f || !isFacingRight && _horizontalInput > 0f)
+        if (_isFacingRight && _horizontalInput < 0f || !_isFacingRight && _horizontalInput > 0f)
         {
-            isFacingRight = !isFacingRight;
-            if (!isFacingRight)
+            _isFacingRight = !_isFacingRight;
+            if (!_isFacingRight)
             {
-                _sm.spriteRenderer.flipX = true;
+                _sm.SpriteRenderer.flipX = true;
             }
-            else _sm.spriteRenderer.flipX = false;
-            EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
+            else _sm.SpriteRenderer.flipX = false;
+            _sm.Blackboard.IsFacingRight = _isFacingRight;
         }
     }
 }

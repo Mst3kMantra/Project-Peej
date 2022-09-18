@@ -4,51 +4,51 @@ using UnityEngine;
 
 public class StateMachine : MonoBehaviour
 {
-    BaseState currentState;
-    BaseState previousState;
+    BaseState CurrentState;
+    BaseState PreviousState;
 
     private void Start()
     {
-        currentState = GetInitialState();
+        CurrentState = GetInitialState();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (currentState != null)
+        if (CurrentState != null)
         {
-            currentState.UpdateLogic();
+            CurrentState.UpdateLogic();
         }
     }
 
     void LateUpdate()
     {
-        if (currentState != null)
+        if (CurrentState != null)
         {
-            currentState.UpdatePhysics();
+            CurrentState.UpdatePhysics();
         }
     }
 
     public void ChangeState(BaseState newState)
     {
-        if (currentState != null)
+        if (CurrentState != null)
         {
-            previousState = currentState;
+            PreviousState = CurrentState;
         }
-        currentState.Exit();
+        CurrentState.Exit();
 
-        currentState = newState;
-        currentState.Enter();
+        CurrentState = newState;
+        CurrentState.Enter();
     }
 
     public void RevertState()
     {
-        if (previousState != null)
+        if (PreviousState != null)
         {
-            currentState.Exit();
+            CurrentState.Exit();
 
-            currentState = previousState;
-            currentState.Enter();
+            CurrentState = PreviousState;
+            CurrentState.Enter();
         }
     }
 
@@ -59,12 +59,12 @@ public class StateMachine : MonoBehaviour
 
     public string GetCurrentState()
     {
-        return currentState.name;
+        return CurrentState.Name;
     }
 
     public string GetPreviousState()
     {
-        return previousState.name;
+        return PreviousState.Name;
     }
 
 }

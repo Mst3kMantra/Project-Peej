@@ -9,7 +9,7 @@ public class Idle : BaseState
 
     public Idle(MovementSM stateMachine) : base("Idle", stateMachine)
     {
-        _sm = (MovementSM)stateMachine;
+        _sm = stateMachine;
     }
 
     public override void Enter()
@@ -17,26 +17,26 @@ public class Idle : BaseState
         base.Enter();
         _sm.transform.localScale = new Vector3(-1, 1, 1);
         _horizontalInput = 0f;
-        _sm.spriteRenderer.color = Color.white;
-        Vector2 vel = _sm.rigidbody.velocity;
+        _sm.SpriteRenderer.color = Color.white;
+        Vector2 vel = _sm.Rigidbody.velocity;
         vel.x *= 0.8f;
-        _sm.rigidbody.velocity = vel;
-        EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
+        _sm.Rigidbody.velocity = vel;
+        _sm.Blackboard.CurrentMovementState = _sm.GetCurrentState();
     }
 
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        if (!_sm.blackboard.isAttacking)
+        if (!_sm.Blackboard.IsAttacking)
         {
             _horizontalInput = Input.GetAxis("Horizontal");
             if (Mathf.Abs(_horizontalInput) > Mathf.Epsilon)
             {
-                stateMachine.ChangeState(_sm.movingState);
+                StateMachine.ChangeState(_sm.MovingState);
             }
-            if (Input.GetButtonDown("Jump") && _sm.blackboard.currentMovementStanceState == "Grounded")
+            if (Input.GetButtonDown("Jump") && _sm.Blackboard.CurrentMovementStanceState == "Grounded")
             {
-                stateMachine.ChangeState(_sm.jumpingState);
+                StateMachine.ChangeState(_sm.JumpingState);
             }
         }
     }

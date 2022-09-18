@@ -5,13 +5,18 @@ using UnityEngine.InputSystem;
 
 public class BaseState
 {
-    public string name;
-    protected StateMachine stateMachine;
+    private string _name;
+    public string Name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+    protected StateMachine StateMachine;
 
     public BaseState(string name, StateMachine stateMachine)
     {
-        this.name = name;
-        this.stateMachine = stateMachine;
+        this.Name = name;
+        this.StateMachine = stateMachine;
     }
     public virtual void Enter() { }
     public virtual void UpdateLogic() { }

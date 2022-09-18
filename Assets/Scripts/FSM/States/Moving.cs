@@ -7,42 +7,41 @@ public class Moving : BaseState, IFlip
 {
     private readonly MovementSM _sm;
     private float _horizontalInput;
-    public bool isFacingRight { get; set; }
-
+    private bool _isFacingRight;
 
     public Moving(MovementSM stateMachine) : base("Moving", stateMachine) {
-        _sm = (MovementSM)stateMachine;
-        isFacingRight = true;
+        _sm = stateMachine;
+        _isFacingRight = true;
     }
 
     public override void Enter()
     {
         base.Enter();
         _horizontalInput = 0f;
-        _sm.spriteRenderer.color = Color.red;
-        EventManager.TriggerEvent("movementStateChange", new Dictionary<string, object> { { "movementState", _sm.GetCurrentState() } });
+        _sm.SpriteRenderer.color = Color.red;
+        _sm.Blackboard.CurrentMovementState = _sm.GetCurrentState();
     }
 
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        if (_sm.blackboard.isAttacking)
+        if (_sm.Blackboard.IsAttacking)
         {
-            _sm.ChangeState(_sm.idleState);
+            _sm.ChangeState(_sm.IdleState);
         }
         _horizontalInput = Input.GetAxis("Horizontal");
         if (Mathf.Abs(_horizontalInput) < Mathf.Epsilon)
         {
-            stateMachine.ChangeState(_sm.idleState);
+            StateMachine.ChangeState(_sm.IdleState);
         }
-        if (Input.GetButtonDown("Jump") && _sm.blackboard.currentMovementStanceState == "Grounded")
+        if (Input.GetButtonDown("Jump") && _sm.Blackboard.CurrentMovementStanceState == "Grounded")
         {
-            stateMachine.ChangeState(_sm.jumpingState);
+            StateMachine.ChangeState(_sm.JumpingState);
         }
-        if (_sm.blackboard.isMoveDoubleTapped)
+        if (_sm.Blackboard.IsMoveDoubleTapped)
         {
-            _sm.blackboard.isMoveDoubleTapped = false;
-            stateMachine.ChangeState(_sm.runningState);
+            _sm.Blackboard.IsMoveDoubleTapped = false;
+            StateMachine.ChangeState(_sm.RunningState);
         }
 
         Flip();
@@ -51,22 +50,22 @@ public class Moving : BaseState, IFlip
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
-        Vector2 vel = _sm.rigidbody.velocity;
-        vel.x = _horizontalInput * (_sm.speed);
-        _sm.rigidbody.velocity = vel;
+        Vector2 vel = _sm.Rigidbody.velocity;
+        vel.x = _horizontalInput * (_sm.Speed);
+        _sm.Rigidbody.velocity = vel;
     }
 
     public void Flip()
     {
-        if (isFacingRight && _horizontalInput < 0f || !isFacingRight && _horizontalInput > 0f)
+        if (_isFacingRight && _horizontalInput < 0f || !_isFacingRight && _horizontalInput > 0f)
         {
-            isFacingRight = !isFacingRight;
-            if (!isFacingRight)
+            _isFacingRight = !_isFacingRight;
+            if (!_isFacingRight)
             {
-                _sm.spriteRenderer.flipX = true;
+                _sm.SpriteRenderer.flipX = true;
             }
-            else _sm.spriteRenderer.flipX = false;
-            EventManager.TriggerEvent("facingChange", new Dictionary<string, object> { { "isFacingRight", isFacingRight } });
+            else _sm.SpriteRenderer.flipX = false;
+            _sm.Blackboard.IsFacingRight = _isFacingRight;
         }
     }
 }

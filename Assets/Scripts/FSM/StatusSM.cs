@@ -4,20 +4,35 @@ using UnityEngine;
 
 public class StatusSM : StateMachine
 {
-    [HideInInspector] public Alive aliveState;
-    [HideInInspector] public Dead deadState;
+    private Alive _aliveState;
+    [HideInInspector] public Alive AliveState
+    {
+        get { return _aliveState; }
+        set { _aliveState = value; }
+    }
+    private Dead _deadState;
+    [HideInInspector] public Dead DeadState
+    {
+        set { _deadState = value; }
+        get { return _deadState; }
+    }
 
-    public PlayerSMBlackboard blackboard;
+    [SerializeField] private PlayerSMBlackboard _blackboard;
+    public PlayerSMBlackboard Blackboard
+    {
+        get { return _blackboard; }
+        set { _blackboard = value; }
+    }
 
     private void Awake()
     {
-        aliveState = new Alive(this);
-        deadState = new Dead(this);
+        AliveState = new Alive(this);
+        DeadState = new Dead(this);
     }
 
     protected override BaseState GetInitialState()
     {
-        return aliveState;
+        return AliveState;
     }
 
     private void OnGUI()

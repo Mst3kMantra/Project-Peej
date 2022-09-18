@@ -7,28 +7,30 @@ public class Neutral : BaseState
     readonly private WarriorAttackSM _sm;
 
     public Neutral(WarriorAttackSM stateMachine) : base("Neutral", stateMachine) {
-        _sm = (WarriorAttackSM)stateMachine;
+        _sm = stateMachine;
     }
 
     public override void Enter()
     {
         base.Enter();
-        EventManager.TriggerEvent("warriorAttackStateChange", new Dictionary<string, object> { { "warriorAttackState", _sm.GetCurrentState() } });
-        EventManager.TriggerEvent("playerAttacking", new Dictionary<string, object> { { "isAttacking", false } });
+        _sm.Blackboard.CurrentWarriorAttackState = _sm.GetCurrentState();
+        _sm.Blackboard.IsAttacking = false;
+        _sm.Blackboard.MaxHits = 0;
+        _sm.Blackboard.Damage = 0;
     }
 
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        if (Input.GetButtonDown("Attack") && _sm.blackboard.currentMovementStanceState == "Grounded")
+        if (Input.GetButtonDown("Attack") && _sm.Blackboard.CurrentMovementStanceState == "Grounded")
         {
-            _sm.ChangeState(_sm.comboA_1State);
+            _sm.ChangeState(_sm.ComboA_1State);
         }
     }
 
     public override void Exit()
     {
         base.Exit();
-        EventManager.TriggerEvent("playerAttacking", new Dictionary<string, object> { { "isAttacking", true } });
+        _sm.Blackboard.IsAttacking = true;
     }
 }

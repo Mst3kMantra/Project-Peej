@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class SpecialInputManager : MonoBehaviour
 {
-    private float ButtonCooler = 0.25f;
-    private int ButtonCount = 0;
+    private float _buttonCooler = 0.25f;
+    private int _buttonCount = 0;
 
     void Update()
     {
         if (Input.GetButtonDown("Horizontal"))
         {
-            if (ButtonCooler > 0 && ButtonCount >= 0)
+            if (_buttonCooler > 0 && _buttonCount >= 0)
             {
-                EventManager.TriggerEvent("doubleTapMove", null);
+                EventManager.TriggerEvent("DoubleTapMove", null);
             }
             else
             {
-                ButtonCooler = 0.25f;
-                ButtonCount += 1;
+                _buttonCooler = 0.25f;
+                _buttonCount += 1;
             }
         }
-        if (ButtonCooler > 0)
+        if (_buttonCooler > 0)
         {
-            ButtonCooler -= 1 * Time.deltaTime;
+            _buttonCooler -= 1 * Time.deltaTime;
         }
-        else ButtonCount = 0;
+        else _buttonCount = 0;
     }
 }

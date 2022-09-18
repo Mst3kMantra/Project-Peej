@@ -2,17 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
-    // Start is called before the first frame update
-    void Start()
+    private float _health;
+    public float Health
     {
-        
+        get { return _health; }
+        set { _health = value; }
+    }
+    private int _hitsTaken;
+    public int HitsTaken
+    {
+        get { return _hitsTaken; }
+        set { _hitsTaken = value; }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Damage(float damageAmount)
     {
-        
+
     }
 }

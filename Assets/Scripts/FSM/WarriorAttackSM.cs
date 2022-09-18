@@ -4,22 +4,41 @@ using UnityEngine;
 
 public class WarriorAttackSM : StateMachine
 {
-    [HideInInspector] public Neutral neutralState;
-    [HideInInspector] public ComboA_1 comboA_1State;
+    private Neutral _neutralState;
+    [HideInInspector] public Neutral NeutralState
+    {
+        get { return _neutralState; }
+        set { _neutralState = value; }
+    }
+    private ComboA_1 _comboA_1State;
+    [HideInInspector] public ComboA_1 ComboA_1State
+    {
+        get { return _comboA_1State; }
+        set { _comboA_1State = value; }
+    }
 
-    public PlayerSMBlackboard blackboard;
-    public new Rigidbody2D rigidbody;
-    public Animator animator;
+    [SerializeField] private PlayerSMBlackboard _blackboard;
+    public PlayerSMBlackboard Blackboard
+    {
+        get { return _blackboard; }
+        set { _blackboard = value; }
+    }
+    [SerializeField] private Rigidbody2D _rigidbody;
+    public Rigidbody2D Rigidbody
+    {
+        get { return _rigidbody; }
+        set { _rigidbody = value; }
+    }
 
     private void Awake()
     {
-        neutralState = new Neutral(this);
-        comboA_1State = new ComboA_1(this);
+        NeutralState = new Neutral(this);
+        ComboA_1State = new ComboA_1(this);
     }
 
     protected override BaseState GetInitialState()
     {
-        return neutralState;
+        return NeutralState;
     }
 
     private void OnGUI()
