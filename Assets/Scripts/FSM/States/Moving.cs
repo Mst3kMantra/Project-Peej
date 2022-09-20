@@ -62,9 +62,9 @@ public class Moving : BaseState, IFlip
             _isFacingRight = !_isFacingRight;
             if (!_isFacingRight)
             {
-                _sm.SpriteRenderer.flipX = true;
+                _sm.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else _sm.SpriteRenderer.flipX = false;
+            else _sm.transform.localScale = new Vector3(-1f, 1f, 1f);
             _sm.Blackboard.IsFacingRight = _isFacingRight;
         }
     }

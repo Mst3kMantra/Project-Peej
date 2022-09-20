@@ -18,6 +18,7 @@ public class Running : BaseState, IFlip
         _horizontalInput = 0f;
         _sm.SpriteRenderer.color = Color.blue;
         _sm.Blackboard.CurrentMovementState = _sm.GetCurrentState();
+        _isFacingRight = _sm.Blackboard.IsFacingRight;
     }
 
     public override void UpdateLogic()
@@ -55,9 +56,9 @@ public class Running : BaseState, IFlip
             _isFacingRight = !_isFacingRight;
             if (!_isFacingRight)
             {
-                _sm.SpriteRenderer.flipX = true;
+                _sm.transform.localScale = new Vector3(1f, 1f, 1f);
             }
-            else _sm.SpriteRenderer.flipX = false;
+            else _sm.transform.localScale = new Vector3(-1f, 1f, 1f);
             _sm.Blackboard.IsFacingRight = _isFacingRight;
         }
     }

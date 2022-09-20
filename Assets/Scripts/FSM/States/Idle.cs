@@ -15,7 +15,6 @@ public class Idle : BaseState
     public override void Enter()
     {
         base.Enter();
-        _sm.transform.localScale = new Vector3(-1, 1, 1);
         _horizontalInput = 0f;
         _sm.SpriteRenderer.color = Color.white;
         Vector2 vel = _sm.Rigidbody.velocity;
