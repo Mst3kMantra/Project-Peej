@@ -69,7 +69,10 @@ public class EventManager : MonoBehaviour
     {
         if (Instance._eventDictionary.TryGetValue(eventName, out Action<Dictionary<string, object>> thisEvent))
         {
-            thisEvent.Invoke(message);
+            if (thisEvent != null)
+            {
+                thisEvent.Invoke(message);
+            }
         }
     }
 }
